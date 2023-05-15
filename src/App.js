@@ -1,24 +1,179 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+
+import { useState } from "react";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import {
+  Box,
+  Button,
+  Flex,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Radio,
+  RadioGroup,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import Emoji from "react-emojis";
+
+import background from "./background.png";
+import axios from "axios";
 
 function App() {
+  const [customValue, setCustomValue] = useState(10);
+  const [value, setValue] = useState("1");
+
+  const [isApproved, setIsApproved] = useState(false);
+  const [payedAmount, setPayedAmount] = useState(0);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Flex>
+      <Box
+        pos="absolute"
+        w="100vw"
+        h="100vh"
+        top="0"
+        left="0"
+        backgroundColor={"rgba(0,0,0,0.3)"}
+      />
+      <Flex
+        backgroundImage={background}
+        height={"100vh"}
+        w="100vw"
+        align={"center"}
+        justify={"center"}
+        color="white"
+        flexDir={"column"}
+      >
+        <Box
+          zIndex={100}
+          background="rgba(255,255,255,0.4)"
+          p="8"
+          borderRadius={"xl"}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
+          {isApproved ? (
+            <>
+              <Text fontSize={"5xl"}>Lo queremos de vuelta!</Text>
+              <Text>
+                Los culé pagaron {payedAmount} USDÏ porque quieren a Messi de
+                vuelta en casa!
+              </Text>
+              <Button
+                onClick={() => {
+                  setIsApproved(false);
+                }}
+              >
+                Check again!
+              </Button>
+            </>
+          ) : (
+            <>
+              <Flex
+                maxW={"800px"}
+                justify={"center"}
+                align="center"
+                flexDir={"column"}
+              >
+                <Text fontSize={"5xl"}>Los culé lo queremos en su casa!</Text>
+                <Text>
+                  Se comenta que Messi puede volver a vestir la camiseta del
+                  Barcelona.
+                </Text>
+                <Text>
+                  Tienes las mismas ganas que nosotros de verlo de vuelta en su
+                  casa?
+                </Text>
+                <Text fontSize={"lg"} fontWeight={"bold"} align="center">
+                  Cuentános cuánto y te mostraremos que piensa la gente!
+                </Text>
+              </Flex>
+              <RadioGroup defaultValue={value} onChange={setValue} mb="4">
+                <Stack spacing={5} direction="column">
+                  <Radio colorScheme="red" value={"1"}>
+                    <Flex align={"center"} gap="2">
+                      <Emoji emoji="trophy" />
+                      <Text>1 USD (Lo quiero de vuelta)</Text>
+                    </Flex>
+                  </Radio>
+                  <Radio colorScheme="blue" value={"5"}>
+                    <Flex align={"center"} gap="2">
+                      <Emoji emoji="trophy" />
+                      <Emoji emoji="trophy" />
+                      <Text>5 USD (Que vuelva ayer!)</Text>
+                    </Flex>
+                  </Radio>
+                  <Radio colorScheme="red" value={"0"}>
+                    <Flex align={"center"} gap="2">
+                      <Emoji emoji="trophy" />
+                      <Emoji emoji="trophy" />
+                      <Emoji emoji="trophy" />
+                      <Text>Que tanto quieres? (USD)</Text>
+                    </Flex>
+                  </Radio>
+                  {!Number(value) && (
+                    <NumberInput min={10}>
+                      <NumberInputField
+                        value={customValue}
+                        setValue={setCustomValue}
+                      />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
+                  )}
+                </Stack>
+              </RadioGroup>
+              <PayPalScriptProvider
+                options={{
+                  "client-id":
+                    "AQpz1ceAqvG08FCSEeSgk3mW9949cN-90B0ZrDa61kh48y2_HyTUmY0hr2JLuRsazMsarPJdCOSLS_4N",
+                }}
+              >
+                <PayPalButtons
+                  disabled={false}
+                  forceReRender={[Number(value) || customValue]}
+                  fundingSource="paypal"
+                  createOrder={(data, actions) => {
+                    return actions.order
+                      .create({
+                        purchase_units: [
+                          {
+                            amount: {
+                              currency_code: "USD",
+                              value: Number(value) || customValue,
+                            },
+                          },
+                        ],
+                      })
+                      .then((orderId) => {
+                        console.log("y", orderId);
+                        // Your code here after create the order
+                        return orderId;
+                      });
+                  }}
+                  onApprove={function (data, actions) {
+                    return actions.order.get().then(function () {
+                      axios
+                        .post(`http://localhost:9000/capture-paypal-order`, {
+                          orderID: data.orderID,
+                        })
+                        .then((response) => {
+                          setPayedAmount(response.data);
+                        })
+                        .catch((error) => console.log("response error", error));
+                      setIsApproved(true);
+                    });
+                  }}
+                />
+              </PayPalScriptProvider>
+            </>
+          )}
+        </Box>
+      </Flex>
+    </Flex>
   );
 }
 
