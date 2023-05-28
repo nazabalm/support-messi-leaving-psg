@@ -28,6 +28,8 @@ function App() {
   const [isApproved, setIsApproved] = useState(false);
   const [payedAmount, setPayedAmount] = useState(0);
 
+  console.log("base ur", process.env.REACT_APP_BASE_URL);
+
   return (
     <Flex>
       <Box
@@ -54,20 +56,24 @@ function App() {
           borderRadius={"xl"}
         >
           {isApproved ? (
-            <>
+            <Flex flexDir={"column"} justify={"center"}>
               <Text fontSize={"5xl"}>Lo queremos de vuelta!</Text>
               <Text>
-                Los culé pagaron {payedAmount} USDÏ porque quieren a Messi de
-                vuelta en casa!
+                Los culé pagaron{" "}
+                <span style={{ fontSize: 20 }}>{payedAmount} USD</span> porque
+                quieren a Messi de vuelta en casa!
               </Text>
               <Button
+                margin={"auto"}
+                mt="5"
+                color="blue"
                 onClick={() => {
                   setIsApproved(false);
                 }}
               >
-                Check again!
+                Vuelve a revisar!
               </Button>
-            </>
+            </Flex>
           ) : (
             <>
               <Flex
@@ -115,6 +121,7 @@ function App() {
                   {!Number(value) && (
                     <NumberInput min={10}>
                       <NumberInputField
+                        onChange={(e) => setCustomValue(e.target.value)}
                         value={customValue}
                         setValue={setCustomValue}
                       />
@@ -129,7 +136,7 @@ function App() {
               <PayPalScriptProvider
                 options={{
                   "client-id":
-                    "AQpz1ceAqvG08FCSEeSgk3mW9949cN-90B0ZrDa61kh48y2_HyTUmY0hr2JLuRsazMsarPJdCOSLS_4N",
+                    "AeFCUSb6YbuLZvPee8NqFhMjAPsdEHjUVf0oTUHWVEufHirNUK-VJZRycYPuefO_gwoixLoqkRM_1nRh",
                 }}
               >
                 <PayPalButtons
@@ -156,15 +163,19 @@ function App() {
                   }}
                   onApprove={function (data, actions) {
                     return actions.order.get().then(function () {
+                      console.log("base ur", process.env.REACT_APP_BASE_URL);
                       axios
-                        .post(`http://localhost:9000/capture-paypal-order`, {
-                          orderID: data.orderID,
-                        })
+                        .post(
+                          `${process.env.REACT_APP_BASE_URL}/capture-paypal-order`,
+                          {
+                            orderID: data.orderID,
+                          }
+                        )
                         .then((response) => {
                           setPayedAmount(response.data);
+                          setIsApproved(true);
                         })
                         .catch((error) => console.log("response error", error));
-                      setIsApproved(true);
                     });
                   }}
                 />
