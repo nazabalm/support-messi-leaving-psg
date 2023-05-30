@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   Flex,
+  Image,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
@@ -18,7 +19,7 @@ import {
 } from "@chakra-ui/react";
 import Emoji from "react-emojis";
 
-import background from "./background.png";
+import messi from "./messi.jpg";
 import axios from "axios";
 
 function App() {
@@ -41,7 +42,7 @@ function App() {
         backgroundColor={"rgba(0,0,0,0.3)"}
       />
       <Flex
-        backgroundImage={background}
+        background={"linear-gradient(#a50044, #004d98)"}
         height={"100vh"}
         w="100vw"
         align={"center"}
@@ -75,112 +76,122 @@ function App() {
               </Button>
             </Flex>
           ) : (
-            <>
+            <Flex gap="4">
+              <Image src={messi} />
               <Flex
-                maxW={"800px"}
-                justify={"center"}
-                align="center"
                 flexDir={"column"}
+                justify={"space-between"}
+                align={"center"}
+                gap="4"
               >
-                <Text fontSize={"5xl"}>Los culé lo queremos en su casa!</Text>
-                <Text>
-                  Se comenta que Messi puede volver a vestir la camiseta del
-                  Barcelona.
-                </Text>
-                <Text>
-                  Tienes las mismas ganas que nosotros de verlo de vuelta en su
-                  casa?
-                </Text>
-                <Text fontSize={"lg"} fontWeight={"bold"} align="center">
-                  Cuentános cuánto y te mostraremos que piensa la gente!
-                </Text>
-              </Flex>
-              <RadioGroup defaultValue={value} onChange={setValue} mb="4">
-                <Stack spacing={5} direction="column">
-                  <Radio colorScheme="red" value={"1"}>
-                    <Flex align={"center"} gap="2">
-                      <Emoji emoji="trophy" />
-                      <Text>1 USD (Lo quiero de vuelta)</Text>
-                    </Flex>
-                  </Radio>
-                  <Radio colorScheme="blue" value={"5"}>
-                    <Flex align={"center"} gap="2">
-                      <Emoji emoji="trophy" />
-                      <Emoji emoji="trophy" />
-                      <Text>5 USD (Que vuelva ayer!)</Text>
-                    </Flex>
-                  </Radio>
-                  <Radio colorScheme="red" value={"0"}>
-                    <Flex align={"center"} gap="2">
-                      <Emoji emoji="trophy" />
-                      <Emoji emoji="trophy" />
-                      <Emoji emoji="trophy" />
-                      <Text>Que tanto quieres? (USD)</Text>
-                    </Flex>
-                  </Radio>
-                  {!Number(value) && (
-                    <NumberInput min={10}>
-                      <NumberInputField
-                        onChange={(e) => setCustomValue(e.target.value)}
-                        value={customValue}
-                        setValue={setCustomValue}
-                      />
-                      <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                      </NumberInputStepper>
-                    </NumberInput>
-                  )}
-                </Stack>
-              </RadioGroup>
-              <PayPalScriptProvider
-                options={{
-                  "client-id":
-                    "AeFCUSb6YbuLZvPee8NqFhMjAPsdEHjUVf0oTUHWVEufHirNUK-VJZRycYPuefO_gwoixLoqkRM_1nRh",
-                }}
-              >
-                <PayPalButtons
-                  disabled={false}
-                  forceReRender={[Number(value) || customValue]}
-                  fundingSource="paypal"
-                  createOrder={(data, actions) => {
-                    return actions.order
-                      .create({
-                        purchase_units: [
-                          {
-                            amount: {
-                              currency_code: "USD",
-                              value: Number(value) || customValue,
+                <Flex
+                  maxW={"800px"}
+                  justify={"center"}
+                  align="center"
+                  flexDir={"column"}
+                >
+                  <Text fontSize={"5xl"}>Los culé lo queremos en su casa!</Text>
+                  <Text>
+                    Se comenta que Messi puede volver a vestir la camiseta del
+                    Barcelona.
+                  </Text>
+                  <Text>
+                    Tienes las mismas ganas que nosotros de verlo de vuelta en
+                    su casa?
+                  </Text>
+                  <Text fontSize={"lg"} fontWeight={"bold"} align="center">
+                    Cuentános cuánto y te mostraremos que piensa la gente!
+                  </Text>
+                </Flex>
+                <RadioGroup defaultValue={value} onChange={setValue} mb="4">
+                  <Stack spacing={5} direction="column">
+                    <Radio colorScheme="red" value={"1"}>
+                      <Flex align={"center"} gap="2">
+                        <Emoji emoji="trophy" />
+                        <Text>1 USD (Lo quiero de vuelta)</Text>
+                      </Flex>
+                    </Radio>
+                    <Radio colorScheme="blue" value={"5"}>
+                      <Flex align={"center"} gap="2">
+                        <Emoji emoji="trophy" />
+                        <Emoji emoji="trophy" />
+                        <Text>5 USD (Que vuelva ayer!)</Text>
+                      </Flex>
+                    </Radio>
+                    <Radio colorScheme="red" value={"0"}>
+                      <Flex align={"center"} gap="2">
+                        <Emoji emoji="trophy" />
+                        <Emoji emoji="trophy" />
+                        <Emoji emoji="trophy" />
+                        <Text>Que tanto quieres? (USD)</Text>
+                      </Flex>
+                    </Radio>
+                    {!Number(value) && (
+                      <NumberInput min={10}>
+                        <NumberInputField
+                          onChange={(e) => setCustomValue(e.target.value)}
+                          value={customValue}
+                          setValue={setCustomValue}
+                        />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    )}
+                  </Stack>
+                </RadioGroup>
+                <PayPalScriptProvider
+                  options={{
+                    "client-id":
+                      "AeFCUSb6YbuLZvPee8NqFhMjAPsdEHjUVf0oTUHWVEufHirNUK-VJZRycYPuefO_gwoixLoqkRM_1nRh",
+                  }}
+                >
+                  <PayPalButtons
+                    disabled={false}
+                    forceReRender={[Number(value) || customValue]}
+                    fundingSource="paypal"
+                    createOrder={(data, actions) => {
+                      return actions.order
+                        .create({
+                          purchase_units: [
+                            {
+                              amount: {
+                                currency_code: "USD",
+                                value: Number(value) || customValue,
+                              },
                             },
-                          },
-                        ],
-                      })
-                      .then((orderId) => {
-                        console.log("y", orderId);
-                        // Your code here after create the order
-                        return orderId;
-                      });
-                  }}
-                  onApprove={function (data, actions) {
-                    return actions.order.get().then(function () {
-                      console.log("base ur", process.env.REACT_APP_BASE_URL);
-                      axios
-                        .post(
-                          `${process.env.REACT_APP_BASE_URL}/capture-paypal-order`,
-                          {
-                            orderID: data.orderID,
-                          }
-                        )
-                        .then((response) => {
-                          setPayedAmount(response.data);
-                          setIsApproved(true);
+                          ],
                         })
-                        .catch((error) => console.log("response error", error));
-                    });
-                  }}
-                />
-              </PayPalScriptProvider>
-            </>
+                        .then((orderId) => {
+                          console.log("y", orderId);
+                          // Your code here after create the order
+                          return orderId;
+                        });
+                    }}
+                    onApprove={function (data, actions) {
+                      return actions.order.get().then(function () {
+                        console.log("base ur", process.env.REACT_APP_BASE_URL);
+                        axios
+                          .post(
+                            `${process.env.REACT_APP_BASE_URL}/capture-paypal-order`,
+                            {
+                              orderID: data.orderID,
+                            }
+                          )
+                          .then((response) => {
+                            setPayedAmount(response.data);
+                            setIsApproved(true);
+                          })
+                          .catch((error) =>
+                            console.log("response error", error)
+                          );
+                      });
+                    }}
+                  />
+                </PayPalScriptProvider>
+              </Flex>
+            </Flex>
           )}
         </Box>
       </Flex>
