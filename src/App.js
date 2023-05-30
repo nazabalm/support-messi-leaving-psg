@@ -50,12 +50,7 @@ function App() {
         color="white"
         flexDir={"column"}
       >
-        <Box
-          zIndex={100}
-          background="rgba(255,255,255,0.4)"
-          p="8"
-          borderRadius={"xl"}
-        >
+        <Box zIndex={100} p="8" borderRadius={"xl"}>
           {isApproved ? (
             <Flex flexDir={"column"} justify={"center"}>
               <Text fontSize={"5xl"}>Lo queremos de vuelta!</Text>
@@ -77,7 +72,12 @@ function App() {
             </Flex>
           ) : (
             <Flex gap="4">
-              <Image src={messi} />
+              <Image
+                src={messi}
+                borderRadius={"3xl"}
+                display={["none", "none", "none", "block"]}
+                alignSelf={"center"}
+              />
               <Flex
                 flexDir={"column"}
                 justify={"space-between"}
