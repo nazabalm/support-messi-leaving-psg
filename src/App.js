@@ -154,6 +154,9 @@ function App() {
                     createOrder={(data, actions) => {
                       return actions.order
                         .create({
+                          application_context: {
+                            shipping_preference: "NO_SHIPPING",
+                          },
                           purchase_units: [
                             {
                               amount: {
