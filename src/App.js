@@ -22,6 +22,27 @@ import Emoji from "react-emojis";
 import messi from "./messi.jpg";
 import axios from "axios";
 
+import { initializeApp } from "firebase/app";
+import { getAnalytics, logEvent } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB0SCJVkhStk7EbNJIPAelpLUI1TjAJrRE",
+  authDomain: "support-messi.firebaseapp.com",
+  projectId: "support-messi",
+  storageBucket: "support-messi.appspot.com",
+  messagingSenderId: "614474825812",
+  appId: "1:614474825812:web:48a88f73e6de0db6bd6dc1",
+  measurementId: "G-L8WTP2122H",
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
 function App() {
   const [customValue, setCustomValue] = useState(10);
   const [value, setValue] = useState("1");
@@ -148,6 +169,11 @@ function App() {
                   }}
                 >
                   <PayPalButtons
+                    onClick={() => {
+                      logEvent(analytics, "begin_checkout", {
+                        value: Number(value) || customValue,
+                      });
+                    }}
                     disabled={false}
                     forceReRender={[Number(value) || customValue]}
                     fundingSource="paypal"
@@ -173,6 +199,8 @@ function App() {
                         });
                     }}
                     onApprove={function (data, actions) {
+                      logEvent(analytics, "purchase");
+
                       return actions.order.get().then(function () {
                         console.log("base ur", process.env.REACT_APP_BASE_URL);
                         axios
