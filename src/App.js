@@ -165,7 +165,7 @@ function App() {
                 <PayPalScriptProvider
                   options={{
                     "client-id":
-                      "AeFCUSb6YbuLZvPee8NqFhMjAPsdEHjUVf0oTUHWVEufHirNUK-VJZRycYPuefO_gwoixLoqkRM_1nRh",
+                      "AXaij1swPNU6VKacEHjSaKQzUl2IjLtkyuIfYCmykLgyB00Bnu2lG_6Wd6n-2rxFHeTnamInRI8QijnA",
                   }}
                 >
                   <PayPalButtons
